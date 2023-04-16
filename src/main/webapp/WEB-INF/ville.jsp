@@ -66,6 +66,10 @@ select, input[type="submit"] {
 	font-size: 16px;
 }
 
+input[type="submit"]{
+	margin-left: 10px;
+}
+
 input[type="submit"]:hover {
 	background-color: #ddd;
 	cursor: pointer;
@@ -155,16 +159,16 @@ th {
 <body>
 
 	<div class="tab">
-		<button class="tablinks" onclick="openTab(event, 'Tab1')">Calculer
+		<button class="tablinks" onclick="openTab(event, 'Tab1')" id="defaultOpen">Calculer
 			la distance entre 2 villes</button>
-		<button class="tablinks" onclick="openTab(event, 'Tab2')"
-			id="defaultOpen">Editer la liste des villes</button>
+		<button class="tablinks" onclick="openTab(event, 'Tab2')">Editer la liste des villes</button>
 	</div>
 
 	<div id="Tab1" class="tabcontent">
 		<h2>Liste des villes</h2>
 		<form method="POST">
 			<input type="hidden" name="action" value="calculateDistance" />
+			<input type="hidden" id="tab1-form-currentTab" name="currentTab" value="Tab1" />
 			<label for="ville1">Ville 1:</label> <select name="ville1"
 				id="ville1">
 				<c:forEach items="${villes}" var="ville">
@@ -187,6 +191,7 @@ th {
 		<h2>Liste des villes</h2>
 		<div class="pagination">
 			<form id="pagination-form" method="GET" action="VillesServlet">
+				<input type="hidden" id="tab2-form-currentTab" name="currentTab" value="Tab2" />
 				<input type="hidden" id="page" name="page" value="${page}" />
 			</form>
 			<button onclick="minus10Pages()">-10 pages</button>
@@ -195,6 +200,7 @@ th {
 			<button onclick="plus10Pages()">+10 pages</button>
 		</div>
 		<form id="editVilleForm" method="POST" action="VillesServlet">
+			<input type="hidden" id="tab2-form-currentTab" name="currentTab" value="Tab2" />
 			<input type="hidden" name="action" value="editVilles" />
 			<input type="hidden" id="editCodeCommune" name="codeCommune">
 			<label for="editNomCommune">Nom Commune:</label> 
@@ -256,10 +262,11 @@ th {
 			// Afficher le contenu de l'onglet sélectionné et ajouter la classe "active" au bouton correspondant
 			document.getElementById(tabName).style.display = "block";
 			evt.currentTarget.className += " active";
+			document.getElementById("tab1-form-currentTab").value = tabName;
+		    document.getElementById("tab2-form-currentTab").value = tabName;
+
 		}
 
-		// Sélectionner le premier onglet par défaut
-		document.getElementById("defaultOpen").click();
 
 	  // fonction pour aller à la page précédente
 	  function previousPage() {
@@ -328,6 +335,17 @@ th {
 		    document.getElementById("currentNomCommune").textContent = ville.nomCommune;
 		    document.getElementById("editLigne").value = ville.ligne;
 		}
+		
+		// Sélectionner le 2e onglet par défaut
+		<c:choose>
+			<c:when test="${not empty currentTab}">
+				document.getElementById("${currentTab}").click();
+			</c:when>
+			<c:otherwise>
+				document.getElementById("defaultOpen").click();
+			</c:otherwise>
+		</c:choose>
+		
 
 	</script>
 </body>

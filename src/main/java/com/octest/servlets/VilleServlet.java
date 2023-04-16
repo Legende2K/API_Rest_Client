@@ -42,7 +42,12 @@ public class VilleServlet extends HttpServlet {
         String modifier = request.getParameter("Modifier");
         String supprimer = request.getParameter("Supprimer");
         String calculDistance = request.getParameter("CalculDistance");
+        String currentTab = request.getParameter("currentTab");
         List<Ville> villes = villeDao.getVilles();
+        if (currentTab == null) {
+            currentTab = "Tab1";
+        }
+        request.setAttribute("currentTab", currentTab);
         if (modifier != null) {
             String codeCommune = request.getParameter("codeCommune");
             String nomCommune = request.getParameter("nomCommune");
